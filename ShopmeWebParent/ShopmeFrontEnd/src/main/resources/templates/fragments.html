@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head th:fragment="page_header(title,remove)" th:remove="${remove}"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	xmlns="http://www.w3.org/1999/xhtml">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>[[${title}]] - [[${SITE_NAME}]]</title>
+
+<link rel="stylesheet" type="text/css"
+	th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}">
+<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+
+
+<script type="text/javascript"
+	th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}"></script>
+
+<script type="text/javascript"
+	th:src="@{/lib/owlcarousel/owl.carousel.min.js}"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/style/styles.css}">
+
+</head>
+
+<body>
+<th th:fragment="column_link(module, fieldName, columnLabel, removeTag)"
+		th:remove="${removeTag}"><a class="custom-a"
+		th:href="@{${module} + '/page/' + ${currentPage} + '?sortField=' + ${fieldName} + '&sortDir=' + 
+		${sortField != fieldName ? sortDir : revertSortDir} + ${keyword!=null ? '&keyword='+keyword : ''}}">[[${columnLabel}]]</a>
+
+		<span th:if="${sortField == fieldName}"
+		th:class="${sortDir == 'asc'? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down'}">
+	</span></th>
+	<div th:fragment="header" class="container-fluid">
+
+		<form name="logoutForm" th:hidden="true" method="post"
+			th:action="@{/doLogout}">
+			<input type="submit" value="Logout" />
+		</form>
+
+		<div class="row bg-secondary py-1 px-xl-5">
+			<div class="col-lg-6 d-none d-lg-block">
+				<div class="d-inline-flex align-items-center h-100">
+					
+				</div>
+			</div>
+			<div class="col-lg-6 text-center text-lg-right">
+				<div class="d-inline-flex align-items-center">
+					<div class="btn-group">
+						<th:block sec:authorize="isAuthenticated()">
+							<button type="button"
+								class="btn btn-sm btn-light dropdown-toggle"
+								data-toggle="dropdown">My Account</button>
+							<div class="dropdown-menu dropdown-menu-right">
+								<a href="javascript: logoutForm.submit();" class="dropdown-item"
+									type="button">Logout</a> <a th:href="@{/customer/editProfile}"
+									class="dropdown-item" type="button">Edit Profile</a>
+							</div>
+						</th:block>
+						<th:block sec:authorize="isAuthenticated() == false">
+							<a th:href="@{/register}" type="button"
+								class="btn btn-sm btn-light">Đăng ký</a>
+
+							<a th:href="@{/login}" type="button" class="btn btn-sm btn-light">Đăng nhập</a>
+						</th:block>
+
+					</div>
+					
+					
+				</div>
+				<div class="d-inline-flex align-items-center d-block d-lg-none">
+					<a href="" class="btn px-0 ml-2"> <i
+						class="fas fa-heart text-dark"></i> <span
+						class="badge text-dark border border-dark rounded-circle"
+						style="padding-bottom: 2px;">0</span>
+					</a> <a href="" class="btn px-0 ml-2"> <i
+						class="fas fa-shopping-cart text-dark"></i> <span
+						class="badge text-dark border border-dark rounded-circle"
+						style="padding-bottom: 2px;">0</span>
+					</a>
+				</div>
+			</div>
+		</div>
+		<div
+			class="row align-items-center bg-light py-3 px-xl-5 d-none d-lg-flex">
+			<div class="col-lg-4">
+				<a href="" class="text-decoration-none" > <span
+					class="h1  px-2">KingOfShop</span>
+				</a>
+			</div>
+			<div class="col-lg-4 col-6 text-left">
+				<form th:action="@{/search}" method="get">
+					<div class="input-group">
+						<input type="search" name="keyword" th:value="${keyword}"
+							class="form-control" placeholder="Tìm kiếm sản phẩm">
+						<div class="input-group-append">
+							<button type="submit"
+								class="input-group-text bg-transparent text-primary">
+								<i class="fa fa-search"></i>
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="col-lg-4 col-6 text-right">
+				<div sec:authorize="isAuthenticated()">
+					<button type="button" class="btn btn-sm btn-light dropdown-toggle"
+						data-toggle="dropdown">[[${#authentication.principal.fullName}]]</button>
+					<div class="dropdown-menu dropdown-menu-right">
+						<a th:href="@{/customers/managementAccount}" class="dropdown-item"
+							type="button">Quản lý tài khoản</a> <a
+							href="javascript: logoutForm.submit();" class="dropdown-item"
+							type="button">Đăng xuất</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:fragment="featured" class="container-fluid pt-5">
+		<div class="row px-xl-5 pb-3">
+			<div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+				<div class="d-flex align-items-center bg-light mb-4"
+					style="padding: 30px;">
+					<h1 class="fa fa-check text-primary m-0 mr-3"></h1>
+					<h5 class="font-weight-semi-bold m-0">Sản phẩm chất lượng</h5>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+				<div class="d-flex align-items-center bg-light mb-4"
+					style="padding: 30px;">
+					<h1 class="fas fa-exchange-alt text-primary m-0 mr-3"></h1>
+					<h5 class="font-weight-semi-bold m-0">14-Ngày hoàn hàng</h5>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+				<div class="d-flex align-items-center bg-light mb-4"
+					style="padding: 30px;">
+					<h1 class="fa fa-phone-volume text-primary m-0 mr-3"></h1>
+					<h5 class="font-weight-semi-bold m-0">24/7 hỗ trợ</h5>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div th:fragment="navManagementAccount" class="collapse d-md-block row"
+		id="bd-docs-nav">
+		<p>Xin chào 0943932775</p>
+		<img height="20px"
+			src="//laz-img-cdn.alicdn.com/tfs/TB1Yvbxh8HH8KJjy0FbXXcqlpXa-208-40.png"
+			data-spm-anchor-id="a2o4n.manage_account.0.i2.44216e88IacI7o">
+		<nav class="bd-links" aria-label="Main navigation">
+
+			<div class="bd-toc-item">
+				<a class="bd-toc-link"
+					th:href="@{/customers/managementAccount}"> Quản lý tài
+					khoản </a>
+			</div>
+
+			<div class="pl-3 bd-toc-item">
+				<a class="bd-toc-link"
+					th:href="@{/customers/editProfile}"> Thông tin cá
+					nhân </a>
+			</div>
+
+			<div class="pl-3 bd-toc-item">
+				<a class="bd-toc-link"
+					th:href="@{/addresses}"> Số địa chỉ </a>
+			</div>
+
+			<div class="bd-toc-item">
+				<a class="bd-toc-link"
+					> Đơn hàng của
+					tôi </a>
+			</div>
+
+			<div class="pl-3 bd-toc-item">
+				<a class="bd-toc-link"
+					th:href="@{/orders}"> Đơn hàng đã đặt
+				</a>
+			</div>
+
+			<div class="pl-3 bd-toc-item">
+				<a class="bd-toc-link"
+					href="/docs/4.6/getting-started/introduction/"> Đơn hàng đã hủy
+				</a>
+			</div>
+
+		</nav>
+	</div>
+
+	<div th:fragment="footer"
+		class="container-fluid bg-dark text-secondary mt-5 pt-5">
+		<div class="row px-xl-5 pt-5">
+			<div class="col-lg-23">
+				<h5 class="text-secondary text-uppercase mb-4">KingOfShop</h5>
+				
+			</div>
+		</div>
+	</div>
+	<a class="page-link"
+		th:fragment="paging_link(moduleURL, numPage, pageLabel)"
+		th:href="@{${moduleURL}+'/page/'+${numPage}+'?sortField='+${sortField}+'&sortDir='+${sortDir} + ${keyword!=null ? '&keyword='+keyword : ''} +${catId!=null ? '&catId='+catId : ''}}">[[${pageLabel}]]</a>
+	<div th:fragment="pagination(moduleURL, entityName)" th:remove="tag" class="container-fluid">
+		<div class="text-center d-flex" th:if="${totalItems > 0}" style="justify-content: space-between;">
+			<span>Showing [[${entityName}]] # [[${startCount}]] to
+				[[${endCount}]] of [[${totalItems}]]</span>
+
+			<nav aria-label="Page navigation example">
+				<ul class="pagination justify-content-center">
+					<li
+						th:class="${currentPage != 1 ? 'page-item ' : 'page-item disabled'}">
+						<a th:replace="fragments :: paging_link(${moduleURL}, 1, 'first')"></a>
+					</li>
+					
+					<li
+						th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+
+						<a
+						th:replace="fragments :: paging_link(${moduleURL}, ${currentPage-1},'Previous')"></a>
+					</li>
+
+					<li
+						th:class="${currentPage != i ? 'page-item' : 'page-item active'}"
+						th:each="i : ${#numbers.sequence(1, totalPages)}"><a
+						th:replace="fragments :: paging_link(${moduleURL}, ${i},${i})"></a></li>
+
+					<li
+						th:class="${currentPage < totalPages ? 'page-item ' : 'page-item disabled'}">
+						<a
+						th:replace="fragments :: paging_link(${moduleURL}, ${currentPage+1},'Next')"></a>
+					</li>
+
+					<li
+						th:class="${currentPage != totalPages ? 'page-item ' : 'page-item disabled'}">
+						<a
+						th:replace="fragments :: paging_link(${moduleURL}, ${totalPages},'last')"></a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+		<div th:unless="${totalItems > 0}" class="text-center">
+			<span>No [[${entityName}]] found</span>
+		</div>
+	</div>
+</body>
+</html>

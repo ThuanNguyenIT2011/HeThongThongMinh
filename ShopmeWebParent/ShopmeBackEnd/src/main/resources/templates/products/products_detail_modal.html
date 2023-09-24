@@ -1,0 +1,205 @@
+<div class="modal-header">
+  <h5 class="modal-title">Chi tiết sản phẩm</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+	<li class="nav-item" role="presentation">
+		<button class="nav-link active" data-toggle="tab"
+			data-target="#overview" type="button">Tổng quan</button>
+	</li>
+	<li class="nav-item" role="presentation">
+		<button class="nav-link" data-toggle="tab"
+			data-target="#description" type="button" role="tab">Mô tả</button>
+	</li>
+	<li class="nav-item" role="presentation">
+		<button class="nav-link" data-toggle="tab"
+			data-target="#images" type="button" role="tab">Hình ảnh</button>
+	</li>
+	<li class="nav-item" role="presentation">
+		<button class="nav-link" id="messages-tab" data-toggle="tab"
+			data-target="#details" type="button" role="tab">Chi tiết</button>
+	</li>
+	<li class="nav-item" role="presentation">
+		<button class="nav-link" id="messages-tab" data-toggle="tab"
+			data-target="#shipping" type="button" role="tab">Giao hàng</button>
+	</li>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content" th:object="${product}">
+	<div class="tab-pane active p-3" id="overview" role="tabpanel">
+		<input type="hidden" th:field="*{id}">
+		<div class="form-group row">
+			<label for="name" class="col-sm-2 col-form-label">Tên sản phẩm:</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" th:field="*{name}"
+					readonly="readonly">
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label for="name" class="col-sm-2 col-form-label">Tên khác:</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" th:field="*{alias}"
+					readonly="readonly">
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label for="name" class="col-sm-2 col-form-label">Nhãn hiệu:</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" th:field="*{brand.name}"
+					readonly="readonly">
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label for="name" class="col-sm-2 col-form-label">Danh mục:</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" th:field="*{category.name}"
+					readonly="readonly">
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label for="enable" class="col-sm-2 col-form-label">Cho phép</label>
+			<div class="col-sm-10">
+				<div class="form-check">
+					<input th:field="*{enabled}" readonly="readonly"
+						class="form-check-input position-static" type="checkbox">
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label for="enable" class="col-sm-2 col-form-label">Còn hàng</label>
+			<div class="col-sm-10">
+				<div class="form-check">
+					<input th:field="*{inStock}" readonly="readonly"
+						class="form-check-input position-static" type="checkbox">
+				</div>
+			</div>
+		</div>
+		
+		<!--  
+		<div class="form-group row">
+			<label for="name" class="col-sm-2 col-form-label">Cost:</label>
+			<div class="col-sm-10">
+				<input type="text" readonly="readonly" class="form-control" th:field="*{cost}">
+			</div>
+		</div>-->
+		
+		<div class="form-group row">
+			<label for="name" class="col-sm-2 col-form-label">Giá:</label>
+			<div class="col-sm-10">
+				<input type="text" readonly="readonly" class="form-control" th:field="*{price}">
+			</div>
+		</div>
+		
+		<div class="form-group row">
+			<label for="name" class="col-sm-2 col-form-label">Giảm giá:</label>
+			<div class="col-sm-10">
+				<input readonly="readonly" type="text" class="form-control" th:field="*{discountPercent}">
+			</div>
+		</div>
+		
+		<div class="form-group row">
+			<label for="name" class="col-sm-2 col-form-label">Thời gian cập nhật:</label>
+			<div class="col-sm-10">
+				<span>[[*{updatedTime}]]</span>
+			</div>
+		</div>
+	</div>
+
+	<div class="tab-pane" id="description" role="tabpanel">
+		<div class="mt-2">
+			<label>Mô tả ngắn:</label>
+			<div class="border p-2 m-2" th:utext="*{shortDescription}"></div>
+		</div>
+		
+		<div class="mt-2">
+			<label>Mô tả:</label>
+			<div class="border p-2 m-2" th:utext="*{fullDescription}"></div>
+		</div>
+	</div>
+
+
+	<div class="tab-pane" id="images" role="tabpanel">
+		<div class="row p-3">
+			<div class="col m-3 p-2 border">
+				<div><label>Hình ảnh chính: [[*{mainImage}]]</label></div>
+				<div>
+					<img style="width: 300px;" class="image-fuild" th:src="@{*{mainImagePath}}" 
+						alt="Main image review" id="thumbnail">
+				</div>
+			</div>
+			<th:block th:each="imageExtra,status : *{productImages}">
+				<div class="col m-3 p-2 border" th:id="'divExtraImage'+${status.index}">
+					<div th:id="'extraImageHeader' + ${status.index}">
+						<label>Hình ảnh khác #[[${status.index + 1}]]:</label>
+						
+					</div>
+					<div>
+						<img style="width: 300px;" class="image-fuild" th:src="@{${imageExtra.pathImage}}"  alt="Extra image #1 review" 
+							th:id="'extraThumbnail'+${status.index}">
+					</div>
+				</div>
+			</th:block>
+		</div>
+		
+	</div>
+
+	<div class="tab-pane" id="details" role="tabpanel">
+		<table class="table mt-2 table-striped">
+		  <thead class="thead-dark">
+		    <tr>
+		      <th scope="col">Tên</th>
+		      <th scope="col">Giá trị</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		    <tr th:each="detail : *{productDetailts}">
+		      <td>[[${detail.name}]]</td>
+		      <td>[[${detail.value}]]</td>
+		    </tr>
+		  </tbody>
+		</table>
+	</div>
+
+	<div class="tab-pane" id="shipping" role="tabpanel">
+		<div class="form-group row mt-2">
+			<label class="col-sm-2 col-form-label">Chiều dài (inch):</label>
+			<div class="col-sm-10">
+				<input readonly="readonly" type="number" step="0.01" class="form-control" th:field="*{length}">
+			</div>
+		</div>
+		
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Chiều rộng (inch):</label>
+			<div class="col-sm-10">
+				<input readonly="readonly" type="number" step="0.01" class="form-control" th:field="*{width}">
+			</div>
+		</div>
+		
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Chiều cao (inch):</label>
+			<div class="col-sm-10">
+				<input readonly="readonly" type="number" step="0.01" class="form-control" th:field="*{height}">
+			</div>
+		</div>
+		
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Khối lượng (Pounds):</label>
+			<div class="col-sm-10">
+				<input readonly="readonly" type="number" step="0.01" class="form-control" th:field="*{weight}">
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+</div>
