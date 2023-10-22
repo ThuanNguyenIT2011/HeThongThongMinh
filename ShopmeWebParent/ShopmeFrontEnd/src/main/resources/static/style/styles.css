@@ -9768,3 +9768,68 @@ a.text-dark:hover, a.text-dark:focus {
     padding-left: 16px;
 }
 
+/*Addition CSS for Chatbox*/
+.btn-toggleChatBox {
+            height: 50px;
+            width: 50px;
+            background-color: #FFD333;
+            border-radius: 50%;
+            border: none;
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            transition: .2s;
+        }
+        .btn-toggleChatBox:hover{
+        	scale: 1.05;
+        }
+
+        .chat-box {
+            height: 0;
+            width: 0;
+            overflow: hidden;
+            position: fixed;
+            bottom: 20px;
+            right: 100px;
+        }
+
+        .chat-box.show {
+            animation: show .5s forwards;
+        }
+
+        .chat-box.hide {
+            animation: hide .5s forwards;
+        }
+
+        .chat-box .card-body::-webkit-scrollbar {
+            width: 2px;
+        }
+
+        .chat-box .card-body::-webkit-scrollbar-thumb {
+            border-radius: 15px;
+            background-color: #FFD333;
+        }
+
+        @keyframes show {
+            0% {
+                height: 0;
+                width: 0;
+            }
+
+            100% {
+                height: auto;
+                width: 1000px;
+            }
+        }
+
+        @keyframes hide {
+            0% {
+                height: auto;
+                width: 1000px;
+            }
+
+            100% {
+                height: 0;
+                width: 0;
+            }
+        }
