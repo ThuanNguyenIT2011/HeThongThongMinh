@@ -189,6 +189,50 @@
 
 		</nav>
 	</div>
+	<button th:fragment="btn_chatBox" class="btn-toggleChatBox position-fixed z-1">
+		<i class="fa-solid fa-toolbox"></i>
+	</button>
+	<div th:fragment="chatBox" class="row d-flex justify-content-end chat-box">
+        <div class="col-md-8 col-lg-6 col-xl-6">
+
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center p-3"
+                    style="border-top: 4px solid #FFD333;">
+                    <h5 class="mb-0">Chat with AI</h5>
+                    <div class="d-flex flex-row align-items-center">
+                        <i class="fas fa-times text-muted fa-xs" style="cursor: pointer;"></i>
+                    </div>
+                </div>
+                <div class="card-body" data-mdb-perfect-scrollbar="true"
+                    style="position: relative; height: 400px; overflow-y: scroll;">
+
+                    <div class="d-flex justify-content-between">
+                        <p class="small mb-1">AI</p>
+                        <p class="small mb-1 text-muted"></p>
+                    </div>
+                    <div class="d-flex flex-row justify-content-start">
+                        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava5-bg.webp"
+                            alt="avatar 1" style="width: 45px; height: 100%;">
+                        <div>
+                            <p class="small p-2 ms-3 mb-3 rounded-sm" style="background-color: #f5f6f7;">Hello!
+                                How can I help you?</p>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
+                    <div class="input-group mb-0">
+                        <input type="text" class="form-control" id="chatbox-input" placeholder="Type message"
+                            aria-label="Recipient's username" aria-describedby="button-addon2" />
+                        <button class="btn btn-warning" type="button" id="button-addon2" style="padding-top: .55rem;">
+                            <i class="fa-solid fa-arrow-right-long"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
 
 	<div th:fragment="footer"
 		class="container-fluid bg-dark text-secondary mt-5 pt-5">

@@ -29,6 +29,10 @@
             </th:block>
         </div>
     </div>
+    <!-- Chatbox here -->
+    <button th:replace="fragments :: btn_chatBox"></button>
+	<div th:replace="fragments :: chatBox"></div>
+    
     <!-- Categories End -->
 	
 	<div th:replace="fragments :: footer"></div>
@@ -37,9 +41,7 @@
     <a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
 
 	<script type="text/javascript" th:src="@{/js/main.js}"></script>
+	<script type="text/javascript" th:src="@{/js/chatBox.js}"></script>
 
-	
-
-	
 </body>
 </html>
