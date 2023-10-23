@@ -86,7 +86,7 @@
 		<div
 			class="row align-items-center bg-light py-3 px-xl-5 d-none d-lg-flex">
 			<div class="col-lg-4">
-				<a href="" class="text-decoration-none" > <span
+				<a href="/Shopme/" class="text-decoration-none" > <span
 					class="h1  px-2">KingOfShop</span>
 				</a>
 			</div>
@@ -189,9 +189,13 @@
 
 		</nav>
 	</div>
-	<button th:fragment="btn_chatBox" class="btn-toggleChatBox position-fixed z-1">
-		<i class="fa-solid fa-toolbox"></i>
+	
+	<!-- Button -->
+	<button th:fragment="btn_chatBox" class="btn-toggleChatBox position-fixed z-100">
+		<i class="fa-regular fa-message"></i>
 	</button>
+	
+	<!-- Chatbox -->
 	<div th:fragment="chatBox" class="row d-flex justify-content-end chat-box">
         <div class="col-md-8 col-lg-6 col-xl-6">
 
@@ -200,48 +204,51 @@
                     style="border-top: 4px solid #FFD333;">
                     <h5 class="mb-0">Chat with AI</h5>
                     <div class="d-flex flex-row align-items-center">
-                        <i class="fas fa-times text-muted fa-xs" style="cursor: pointer;"></i>
+                        <i class="fas fa-times text-muted fa-xs" style="cursor: pointer; font-size: 28px;"></i>
                     </div>
                 </div>
                 <div class="card-body" data-mdb-perfect-scrollbar="true"
                     style="position: relative; height: 400px; overflow-y: scroll;">
 
-                    <div class="d-flex justify-content-between">
-                        <p class="small mb-1">AI</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <p class="small mb-1 ml-1 text-dark">AI</p>
                         <p class="small mb-1 text-muted"></p>
                     </div>
-                    <div class="d-flex flex-row justify-content-start">
+                    <div class="d-flex justify-content-start align-items-center">
                         <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava5-bg.webp"
                             alt="avatar 1" style="width: 45px; height: 100%;">
-                        <div>
-                            <p class="small p-2 ms-3 mb-3 rounded-sm" style="background-color: #f5f6f7;">Hello!
+                        <div class="ml-1">
+                            <p class="small p-2 ms-3 mb-0 rounded-sm text-dark" style="background-color: #f5f6f7;">Hello!
                                 How can I help you?</p>
                         </div>
                     </div>
 
                 </div>
                 <div class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
-                    <div class="input-group mb-0">
+                    <div class="input-group mb-0 flex overflow-hidden">
+		
                         <input type="text" class="form-control" id="chatbox-input" placeholder="Type message"
                             aria-label="Recipient's username" aria-describedby="button-addon2" />
-                        <button class="btn btn-warning" type="button" id="button-addon2" style="padding-top: .55rem;">
+                        <button class="btn btn-warning" type="button" id="button-addon2" >
                             <i class="fa-solid fa-arrow-right-long"></i>
                         </button>
+                   
                     </div>
                 </div>
             </div>
 
         </div>
     </div>
+    
+    <!-- FOOTER -->
 
-	<div th:fragment="footer"
-		class="container-fluid bg-dark text-secondary mt-5 pt-5">
-		<div class="row px-xl-5 pt-5">
-			<div class="col-lg-23">
-				<h5 class="text-secondary text-uppercase mb-4">KingOfShop</h5>
-				
-			</div>
-		</div>
+	<div th:fragment="footer" class="position-fixed fixed-bottom container-fluid bg-dark text-secondary">
+	    <button th:replace="fragments :: btn_chatBox"></button>
+		<div th:replace="fragments :: chatBox"></div>
+		
+		<script type="text/javascript" th:src="@{/js/main.js}"></script>
+		<script type="text/javascript" th:src="@{/js/chatBox.js}"></script>
+
 	</div>
 	<a class="page-link"
 		th:fragment="paging_link(moduleURL, numPage, pageLabel)"
@@ -289,4 +296,7 @@
 		</div>
 	</div>
 </body>
+
+	
 </html>
+
