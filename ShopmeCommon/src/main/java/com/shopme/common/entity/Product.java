@@ -10,6 +10,7 @@ import java.util.Set;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -77,6 +78,8 @@ public class Product {
 	
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
 	List<ProductDetail> productDetailts = new ArrayList<>();
+	@OneToMany(mappedBy = "product", fetch = FetchType.EAGER) 
+	private List<Guarantee> guarantees; 
 	
 	public Product() {}
 	
@@ -84,16 +87,20 @@ public class Product {
 		this.id = id;
 	}
 
-	public Product(String name, String alias, String sortDescription, String fullDescription, Date createdTime,
-			Date updateTime, boolean enabled, boolean inStock, double cost, double price, double discountPercent,
-			float length, float width, float height, float weight, Category category, Brand brand) {
+	
+	public Product(Integer id, String name, String alias, String shortDescription, String fullDescription,
+			Date createdTime, Date updatedTime, boolean enabled, boolean inStock, double cost, double price,
+			double discountPercent, float length, float width, float height, float weight, String mainImage,
+			Category category, Brand brand, Set<ProductImage> productImages, List<ProductDetail> productDetailts,
+			List<Guarantee> guarantees) {
 		super();
+		this.id = id;
 		this.name = name;
 		this.alias = alias;
-		this.shortDescription = sortDescription;
+		this.shortDescription = shortDescription;
 		this.fullDescription = fullDescription;
 		this.createdTime = createdTime;
-		this.updatedTime = updateTime;
+		this.updatedTime = updatedTime;
 		this.enabled = enabled;
 		this.inStock = inStock;
 		this.cost = cost;
@@ -103,10 +110,14 @@ public class Product {
 		this.width = width;
 		this.height = height;
 		this.weight = weight;
+		this.mainImage = mainImage;
 		this.category = category;
 		this.brand = brand;
+		this.productImages = productImages;
+		this.productDetailts = productDetailts;
+		this.guarantees = guarantees;
 	}
-	
+
 	public void addProductDetail(String nameDetail, String valueDetail) {
 		this.productDetailts.add(new ProductDetail(nameDetail, valueDetail, this));
 	}
@@ -125,6 +136,16 @@ public class Product {
 
 	public void setProductImages(Set<ProductImage> productImages) {
 		this.productImages = productImages;
+	}
+	
+	
+
+	public List<Guarantee> getGuarantees() {
+		return guarantees;
+	}
+
+	public void setGuarantees(List<Guarantee> guarantees) {
+		this.guarantees = guarantees;
 	}
 
 	public Integer getId() {

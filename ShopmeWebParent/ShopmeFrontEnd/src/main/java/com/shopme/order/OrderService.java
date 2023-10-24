@@ -1,5 +1,6 @@
 package com.shopme.order;
 
+import java.util.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -16,12 +17,14 @@ import com.shopme.checkout.CheckoutInfo;
 import com.shopme.common.entity.Address;
 import com.shopme.common.entity.CartItem;
 import com.shopme.common.entity.Customer;
+import com.shopme.common.entity.Guarantee;
 import com.shopme.common.entity.Order;
 import com.shopme.common.entity.OrderDetail;
 import com.shopme.common.entity.OrderStatus;
 import com.shopme.common.entity.PaymentMethod;
 import com.shopme.setting.StateRepository;
 
+import guarantee.GuaranteeDao;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -51,17 +54,32 @@ public class OrderService {
 		}
 		
 		Set<OrderDetail> orderdetail = new HashSet<>();
+		List<Guarantee> guarantees = new ArrayList<>(); 
+		
 		for (CartItem cartItem : cartItems) {
 			OrderDetail detail = new OrderDetail();
 			detail.setOrder(order);
 			detail.setProduct(cartItem.getProduct());
 			detail.setQuantity(cartItem.getQuantity());
-			detail.setProductCost((float)cartItem.getProduct().getPriceDiscountPercent());
+			detail.setProductCost((float)cartItem.getProduct().getPriceDiscountPercent()); 
+			
+			int quality = cartItem.getQuantity(); 
+			for (int i = 0; i < quality;i++) {
+				Guarantee guarantee = new Guarantee(); 
+				guarantee.setStartTime(new Date());
+				 Calendar calendar = Calendar.getInstance();
+				 calendar.setTime(guarantee.getStartTime()); 
+				 calendar.add(Calendar.DAY_OF_MONTH, 365 * 2); // bao hanh 2 nam
+				 Date endDate = calendar.getTime();
+				 guarantee.setEndDate(endDate); 
+				 guarantee.setProduct(cartItem.getProduct());
+				 guarantees.add(guarantee); 
+			}
 			
 			orderdetail.add(detail);
 		}
 		order.setOrderDetails(orderdetail);
-		
+		order.setGuarantees(guarantees);
 		return orderRepository.save(order);
 	}
 	
@@ -85,5 +103,9 @@ public class OrderService {
 	
 	public void updateOrderStatusByID(Integer orderId, OrderStatus orderStatus) {
 		orderRepository.updateStatus(orderId, orderStatus);
+	}
+	public List<Guarantee> getGuarantees(int id) {
+		Order order = orderRepository.findById(id).get(); 
+		return order.getGuarantees(); 
 	}
 }

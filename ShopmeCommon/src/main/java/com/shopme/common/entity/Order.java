@@ -11,6 +11,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -78,6 +79,11 @@ public class Order {
 	@OrderBy("dateUpdate ASC")
 	private List<OrderTrack> orderTracks = new ArrayList<>();
 	
+	
+	@OneToMany(mappedBy = "order", fetch = FetchType.EAGER) 
+	private List<Guarantee> guarantees; 
+	
+	
 	public Order() {}
 	
 	public Order(Integer id) {
@@ -89,11 +95,14 @@ public class Order {
 		this.dateOrdertime = dateOrdertime;
 		this.total = total;
 	}
+	
+
 
 	public Order(Integer id, String firstName, String lastName, String phoneNumber, String addressLine1,
 			String addressLine2, String city, String postalCode, State state, Date dateOrdertime, float total,
-			int deliverDays, Date deliverDate, PaymentMethod paymentMethod, OrderStatus orderStatus, Customer customer,
-			Set<OrderDetail> orderDetails) {
+			float shippingCost, int deliverDays, Date deliverDate, PaymentMethod paymentMethod, OrderStatus orderStatus,
+			Customer customer, Set<OrderDetail> orderDetails, List<OrderTrack> orderTracks,
+			List<Guarantee> guarantees) {
 		super();
 		this.id = id;
 		this.firstName = firstName;
@@ -106,12 +115,15 @@ public class Order {
 		this.state = state;
 		this.dateOrdertime = dateOrdertime;
 		this.total = total;
+		this.shippingCost = shippingCost;
 		this.deliverDays = deliverDays;
 		this.deliverDate = deliverDate;
 		this.paymentMethod = paymentMethod;
 		this.orderStatus = orderStatus;
 		this.customer = customer;
 		this.orderDetails = orderDetails;
+		this.orderTracks = orderTracks;
+		this.guarantees = guarantees;
 	}
 
 	public Integer getId() {
@@ -259,6 +271,15 @@ public class Order {
 	}
 	
 	
+	
+
+	public List<Guarantee> getGuarantees() {
+		return guarantees;
+	}
+
+	public void setGuarantees(List<Guarantee> guarantees) {
+		this.guarantees = guarantees;
+	}
 
 	public void copyAddressFromCustomer() {
 		setFirstName(customer.getFirstName());
