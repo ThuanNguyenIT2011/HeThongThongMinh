@@ -26,28 +26,43 @@ public class Guarantee {
 	@Column(name="end_time")
 	private Date endDate;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "orders_id")
 	private Order order; 
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="products_id")
 	private Product product; 
+	private int quality; 
+	
 	
 	
 	public Guarantee() {}
 	
 	
-	public Guarantee(Date startTime, Date endDate, Order order, Product product) {
+	public Guarantee(Date startTime, Date endDate, Order order, Product product, int quality) {
 		this.startTime = startTime;
 		this.endDate = endDate;
 		this.order = order;
 		this.product = product;
+		this.quality = quality; 
 	}
 
 
 	public Integer getId() {
 		return id;
+	}
+	
+	
+
+
+	public int getQuality() {
+		return quality;
+	}
+
+
+	public void setQuality(int quality) {
+		this.quality = quality;
 	}
 
 

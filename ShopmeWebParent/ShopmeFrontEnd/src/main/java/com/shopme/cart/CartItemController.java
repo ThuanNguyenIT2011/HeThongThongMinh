@@ -41,6 +41,7 @@ public class CartItemController {
 
 	@PostMapping("/add_to_cart")
 	public String addToCart(Model model, HttpServletRequest request) {
+		System.out.println("vào đây");
 		Integer productId = Integer.parseInt(request.getParameter("productId"));
 		int quantity = Integer.parseInt(request.getParameter("quantity"));
 		String email = getEmailOfAuthenticatedCustomer(request);

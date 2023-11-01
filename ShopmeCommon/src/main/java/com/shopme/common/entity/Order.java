@@ -80,7 +80,7 @@ public class Order {
 	private List<OrderTrack> orderTracks = new ArrayList<>();
 	
 	
-	@OneToMany(mappedBy = "order", fetch = FetchType.EAGER) 
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL,orphanRemoval = true) 
 	private List<Guarantee> guarantees; 
 	
 	
