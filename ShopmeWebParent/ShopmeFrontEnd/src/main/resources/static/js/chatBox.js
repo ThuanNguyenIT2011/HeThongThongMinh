@@ -1,3 +1,6 @@
+
+
+let isInputOrderId = false
 function getHTMLTemplateMessage(site, obj) {
   if (site === "ai") {
     const now = new Date();
@@ -43,6 +46,7 @@ document.getElementById("chatbox-input").addEventListener("keydown", function (e
 function addNewMessage() {
   const input = document.getElementById("chatbox-input");
   const inputClient = input.value;
+  input.value = ''
   if (inputClient) {
     document.querySelector(".card-body").insertAdjacentHTML(
       "beforeend",
@@ -53,16 +57,99 @@ function addNewMessage() {
     );
     document.querySelector(".card-body").scroll(0, 10000);
     
+    if (isInputOrderId) {		
+		 fetch(
+			 `http://localhost:9000/Shopme/api/v1/guarantee/${inputClient}`,
+			 {
+			 method: "GET",
+			 cache: "no-cache", 
+		     headers: {"Content-Type": "application/json"}
+			 }
+		 )
+		 .then(response => response.json())
+		 .then(data => {
+	
+			 // hienr thị ra thông tin của khách hàng. + địa chỉ 
+			 let message = `Thông tin bảo hành<br>${data.customerName}, ${data.customerPhoneNumber}`
+			 let guarantees = data.guarantees 
+			 let x = ''
+			 for(let guarantee of guarantees) {
+				 let y = ''
+				 if (guarantee.stillUnderGuarantee) {
+					y = `còn bảo hành (${guarantee.guaranteeStartTime.slice(0,10)}, ${guarantee.guaranteeEndTime.slice(0,10)})` 
+			
+				 }
+				 else {
+					
+				 }
+				 
+				 x += `<br>${guarantee.productName}, ${y}`
+				 console.log(guarantee)
+			 }
+			 message += x
+			document.querySelector(".card-body").
+					insertAdjacentHTML("beforeend",getHTMLTemplateMessage("ai", { name: "AI", message: message}))
+      		document.querySelector(".card-body").scroll(0, 10000);
+      		document.querySelector(".card-body").
+					insertAdjacentHTML("beforeend",getHTMLTemplateMessage("ai", { name: "AI", message: 'Bạn có thể mang máy đến: 230/120A Man Thiện, TP Thủ Đức'}))
+      		document.querySelector(".card-body").scroll(0, 10000);
+		
+			isInputOrderId = false
+		 })
+		 
+		
+		
+		
+		
+		return
+	} 
+    
     // api
     getDataFromFlask(inputClient)
     	.then(response => {
+			let message
+			if (response.data.id == 0) {
+				message = 'Xin chào mình là chatbox KingOfShop, bạn có vấn đề gì về thiết bị điện tử bạn có thể mô tả cho tôi để tôi dự đoán' 
+			}
+			else {		
+				message = 'Tôi dự đoán bạn đang gặp phải vấn đề về ' +  response.data.name + ` (${response.data.type}) `
+			}	
 			document.querySelector(".card-body").
-				insertAdjacentHTML("beforeend",getHTMLTemplateMessage("ai", { name: "AI", message: response.data.name,}))
+				insertAdjacentHTML("beforeend",getHTMLTemplateMessage("ai", { name: "AI", message}))
       		document.querySelector(".card-body").scroll(0, 10000);
+      		
+      		if (response.data.solution != '') {
+					solution = `Bạn có thể tham khảo cách giải quyết tại: <a href="${response.data.solution}">link</a>`
+					document.querySelector(".card-body").
+					insertAdjacentHTML("beforeend",getHTMLTemplateMessage("ai", { name: "AI", message: solution}))
+      		document.querySelector(".card-body").scroll(0, 10000);
+			}
+			
+			if (response.data.type === 'hardware')  {
+				// hỏi xem người dùng có mua máy ở đây không
+				let message = `Thiết bị được mua tại cửa hàng: <a onclick="clickYesWithAI()" style="cursor: pointer"><u>yes</u></a> / <a style="cursor: pointer"><u>no</u></a>`
+				document.querySelector(".card-body").insertAdjacentHTML("beforeend",getHTMLTemplateMessage("ai", { name: "AI", message}))
+      		document.querySelector(".card-body").scroll(0, 10000);
+				
+			}
+			// sau đó mời người dùng chọn có mua hàng tại cửa hàng không.
 		})
-    input.value = ""
   }
 }
+
+
+function clickYesWithAI() {
+	// khi nguoi dung chon yes -> sau do nguoi dung se nhap vao ma so phieu mua hang. /
+	isInputOrderId = true 
+	let message = "Hãy cho tôi biết số hóa đơn khi mua hàng, tôi sẽ giúp bạn kiểm tra xem thiết bị bạn mua có còn bảo hành hay không?"
+	document.querySelector(".card-body").insertAdjacentHTML("beforeend",getHTMLTemplateMessage("ai", { name: "AI", message}))
+      		document.querySelector(".card-body").scroll(0, 10000);
+	
+	
+}
+
+
+
 document.querySelector(".btn-toggleChatBox").onclick = function () {
   const chatBox = document.querySelector(".chat-box");
   chatBox.classList.toggle("show");
