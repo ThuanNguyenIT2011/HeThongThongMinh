@@ -15,12 +15,10 @@ public interface ProductRepository extends JpaRepository<Product, Integer>{
 			") ORDER BY p.name ASC")
 	public Page<Product> findAllByCategories(Integer catId, String catMatchId, Pageable pageable);
 	
-	@Query("SELECT p FROM Product p WHERE p.enabled = true AND "+
-			"p.alias = ?1")		
+	@Query("SELECT p FROM Product p WHERE p.enabled = true AND " + "p.alias = ?1")		
 	public Product findByAliasByEnabled(String alias);
 	
 	@Query(value = "SELECT * FROM products AS p WHERE p.enabled AND " +
-			"MATCH(name, short_description, full_description) AGAINST (?1)", 
-			nativeQuery = true)
+			"MATCH(name, short_description, full_description) AGAINST (?1)", nativeQuery = true)
 	public Page<Product> search(String keyword, Pageable pageable);
 }

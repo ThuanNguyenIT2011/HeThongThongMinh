@@ -1,9 +1,6 @@
 package com.shopme.order;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,12 +13,14 @@ import com.shopme.checkout.CheckoutInfo;
 import com.shopme.common.entity.Address;
 import com.shopme.common.entity.CartItem;
 import com.shopme.common.entity.Customer;
+import com.shopme.common.entity.Guarantee;
 import com.shopme.common.entity.Order;
 import com.shopme.common.entity.OrderDetail;
 import com.shopme.common.entity.OrderStatus;
 import com.shopme.common.entity.PaymentMethod;
+import com.shopme.guarantee.GuaranteeDto;
+import com.shopme.guarantee.WrapperGuaranteeDto;
 import com.shopme.setting.StateRepository;
-
 import jakarta.transaction.Transactional;
 
 @Service
@@ -33,6 +32,7 @@ public class OrderService {
 	
 	public Order createOrder(Customer customer, Address address, List<CartItem> cartItems,
 			PaymentMethod paymentMethod, CheckoutInfo checkoutInfo) {
+		System.out.println("có vào đây");
 		Order order = new Order();
 		order.setDateOrdertime(new Date());
 		order.setOrderStatus(OrderStatus.NEW);
@@ -51,17 +51,32 @@ public class OrderService {
 		}
 		
 		Set<OrderDetail> orderdetail = new HashSet<>();
+		List<Guarantee> guarantees = new ArrayList<>(); 
+		
 		for (CartItem cartItem : cartItems) {
 			OrderDetail detail = new OrderDetail();
 			detail.setOrder(order);
 			detail.setProduct(cartItem.getProduct());
 			detail.setQuantity(cartItem.getQuantity());
-			detail.setProductCost((float)cartItem.getProduct().getPriceDiscountPercent());
+			detail.setProductCost((float)cartItem.getProduct().getPriceDiscountPercent()); 
 			
+
+			Guarantee guarantee = new Guarantee(); 
+			guarantee.setOrder(order);
+			guarantee.setStartTime(new Date());
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(guarantee.getStartTime()); 
+			calendar.add(Calendar.DAY_OF_MONTH, 365 * 2); 
+			Date endDate = calendar.getTime();
+			guarantee.setEndDate(endDate); 
+			guarantee.setQuality(detail.getQuantity());
+			guarantee.setProduct(cartItem.getProduct());
+			
+			guarantees.add(guarantee); 
 			orderdetail.add(detail);
 		}
 		order.setOrderDetails(orderdetail);
-		
+		order.setGuarantees(guarantees); 
 		return orderRepository.save(order);
 	}
 	
@@ -85,5 +100,40 @@ public class OrderService {
 	
 	public void updateOrderStatusByID(Integer orderId, OrderStatus orderStatus) {
 		orderRepository.updateStatus(orderId, orderStatus);
+	}
+	public WrapperGuaranteeDto getGuarantees(int id) {
+		try {
+			Order order = orderRepository.findById(id).get(); 
+			WrapperGuaranteeDto wrapperGuaranteeDto = new WrapperGuaranteeDto(); 
+			
+			List<Guarantee> guarantees =  order.getGuarantees();  
+			List<GuaranteeDto> guaranteeDtos = new ArrayList<GuaranteeDto>(); 
+			guarantees.forEach(g -> {
+				GuaranteeDto guaranteeDto = new GuaranteeDto(); 
+				guaranteeDto.guaranteeId = g.getId(); 
+				guaranteeDto.guaranteeStartTime = g.getStartTime(); 
+				guaranteeDto.guaranteeEndTime = g.getEndDate(); 	
+				
+				if (guaranteeDto.guaranteeEndTime.compareTo(new Date()) > 0) {
+					guaranteeDto.stillUnderGuarantee = true; 
+				}
+				else {
+					guaranteeDto.stillUnderGuarantee = false; 
+				}
+				guaranteeDto.productId = g.getProduct().getId(); 
+				guaranteeDto.productName = g.getProduct().getName(); 
+				guaranteeDtos.add(guaranteeDto);
+			});
+			wrapperGuaranteeDto.guarantees = guaranteeDtos; 
+			wrapperGuaranteeDto.customerName = order.getFullName(); 
+			wrapperGuaranteeDto.customerPhoneNumber = order.getPhoneNumber(); 
+			wrapperGuaranteeDto.orderId = order.getId(); 
+			
+			return wrapperGuaranteeDto; 
+		}
+		catch (Exception e) {
+			return null; 
+		}
+
 	}
 }
