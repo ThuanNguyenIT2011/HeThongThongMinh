@@ -43,6 +43,13 @@ document.getElementById("chatbox-input").addEventListener("keydown", function (e
   });
   
   
+ function isInteger(str) {
+  let n = parseInt(str);
+  return !isNaN(n) && Number.isInteger(n);
+}
+
+  
+  
 function addNewMessage() {
   const input = document.getElementById("chatbox-input");
   const inputClient = input.value;
@@ -58,6 +65,16 @@ function addNewMessage() {
     document.querySelector(".card-body").scroll(0, 10000);
     
     if (isInputOrderId) {		
+	 	
+	 	// check xem co ton tai so trong nay khong. 
+	 	if(!isInteger(inputClient)) {
+			// thông báo với nguoi dung
+			document.querySelector(".card-body").
+					insertAdjacentHTML("beforeend",getHTMLTemplateMessage("ai", { name: "AI", message: "Số hóa đơn là số nguyên!"}))
+      		document.querySelector(".card-body").scroll(0, 10000);
+			return
+		}
+		 isInputOrderId = false 	 
 		 fetch(
 			 `http://localhost:9000/Shopme/api/v1/guarantee/${inputClient}`,
 			 {
@@ -80,18 +97,17 @@ function addNewMessage() {
 			
 				 }
 				 else {
-					
+					y = `không còn bảo hành (${guarantee.guaranteeStartTime.slice(0,10)}, ${guarantee.guaranteeEndTime.slice(0,10)})` 
 				 }
 				 
 				 x += `<br>${guarantee.productName}, ${y}`
-				 console.log(guarantee)
 			 }
 			 message += x
 			document.querySelector(".card-body").
 					insertAdjacentHTML("beforeend",getHTMLTemplateMessage("ai", { name: "AI", message: message}))
       		document.querySelector(".card-body").scroll(0, 10000);
       		document.querySelector(".card-body").
-					insertAdjacentHTML("beforeend",getHTMLTemplateMessage("ai", { name: "AI", message: 'Bạn có thể mang máy đến: 230/120A Man Thiện, TP Thủ Đức'}))
+					insertAdjacentHTML("beforeend",getHTMLTemplateMessage("ai", { name: "AI", message: 'Bạn có thể bảo hành thiết bị tại: 230/15A Man Thiện, TP.Thủ Đức'}))
       		document.querySelector(".card-body").scroll(0, 10000);
 		
 			isInputOrderId = false
@@ -109,7 +125,7 @@ function addNewMessage() {
     	.then(response => {
 			let message
 			if (response.data.id == 0) {
-				message = 'Xin chào mình là chatbox KingOfShop, bạn có vấn đề gì về thiết bị điện tử bạn có thể mô tả cho tôi để tôi dự đoán' 
+				message = 'Xin chào mình là chatbot KingOfShop, bạn có vấn đề gì về thiết bị điện tử bạn có thể mô tả cho tôi để tôi dự đoán' 
 			}
 			else {		
 				message = 'Tôi dự đoán bạn đang gặp phải vấn đề về ' +  response.data.name + ` (${response.data.type}) `
@@ -127,12 +143,11 @@ function addNewMessage() {
 			
 			if (response.data.type === 'hardware')  {
 				// hỏi xem người dùng có mua máy ở đây không
-				let message = `Thiết bị được mua tại cửa hàng: <a onclick="clickYesWithAI()" style="cursor: pointer"><u>yes</u></a> / <a style="cursor: pointer"><u>no</u></a>`
+				let message = `Thiết bị được mua tại cửa hàng: <a onclick="clickYesWithAI()" style="cursor: pointer"><u>yes</u></a> / <a onclick="clickNoWithAI()" style="cursor: pointer"><u>no</u></a>`
 				document.querySelector(".card-body").insertAdjacentHTML("beforeend",getHTMLTemplateMessage("ai", { name: "AI", message}))
       		document.querySelector(".card-body").scroll(0, 10000);
 				
 			}
-			// sau đó mời người dùng chọn có mua hàng tại cửa hàng không.
 		})
   }
 }
@@ -147,6 +162,16 @@ function clickYesWithAI() {
 	
 	
 }
+
+function clickNoWithAI() {
+	// khi nguoi dung chon yes -> sau do nguoi dung se nhap vao ma so phieu mua hang. 
+	let message = "Bạn có thể mang thiết bị đến 230/15A Man Thiện TP.Thủ Đức để chúng tôi kiểm tra!"
+	document.querySelector(".card-body").insertAdjacentHTML("beforeend",getHTMLTemplateMessage("ai", { name: "AI", message}))
+      		document.querySelector(".card-body").scroll(0, 10000);
+	
+	
+}
+
 
 
 

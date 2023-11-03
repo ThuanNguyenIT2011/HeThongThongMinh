@@ -16,15 +16,11 @@ import com.shopme.common.entity.Product;
 
 @Controller
 public class ProductCotroller {
-	@Autowired
-	private CategoryService categoryService;
-
-	@Autowired
-	private ProductService productService;
+	@Autowired private CategoryService categoryService;
+	@Autowired private ProductService productService;
 
 	@GetMapping("/cat/{aliasCat}")
-	public String viewProdcutFirstPage(@PathVariable("aliasCat") String alias,
-			Model model) {
+	public String viewProdcutFirstPage(@PathVariable("aliasCat") String alias, Model model) {
 		return viewProductByPage(1, alias, model);
 	}
 	
